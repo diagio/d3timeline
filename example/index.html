@@ -1,0 +1,175 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="../src/js/d3.v3.min.js" type="application/javascript"></script>
+<script src="../src/js/timeknots.js" type="application/javascript"></script>
+
+<script src="../src/js/jquery-2.1.4.js"></script>
+<script src="../src/js/jquery-ui.js"></script>
+<script src="../src/js/jQAllRangeSliders-withRuler-min.js"></script>
+
+<link href="../src/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="../src/css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+<link href="../src/css/iThing.css" rel="stylesheet" type="text/css" />
+
+<style>
+body {
+	font: 18px "Helvetica Neue";
+	font-weight: 300;
+	text-rendering: optimizeLegibility;
+	margin-left: 20px;
+}
+
+.axis line {
+  vector-effect: non-scaling-stroke;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+</style>
+</head>
+<body>
+
+	<div class="fluid-row">
+		<div class="span3">
+			<h2>Schedule</h2>
+			<h5>Schedule in a vertical layout</h5>
+			<div id="timeline2" style="width: 200px; height: 400px;"></div>
+		</div>
+		<div class="span6">
+			<h2>Stanley Kubrick's movies</h2>
+			<h5>Part of Kubrick's Filmography from Wikipedia</h5>
+			<div id="timeline1" style="width: 500px;"></div>
+			<div id="slider"></div>
+		</div>
+				
+	</div>
+	<script type="text/javascript">
+		var kurbickFilms = [
+				{
+					name : "Day of the Fight",
+					date : "1951-04-26",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Day_of_the_Fight_title.jpg/215px-Day_of_the_Fight_title.jpg"
+				},
+				{
+					name : "The Seafarers I",
+					date : "1953-10-15",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Seafarers_title.jpg/225px-Seafarers_title.jpg",
+					click : function() {alert("The Seafarers I");},
+					radius : 15
+				},
+				{
+					name : "The Seafarers II",
+					date : "1953-10-16",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Seafarers_title.jpg/225px-Seafarers_title.jpg",
+					click : function() {alert("The Seafarers II");},
+					radius : 10
+				},
+				{
+					name : "The Seafarers III",
+					date : "1953-10-17",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Seafarers_title.jpg/225px-Seafarers_title.jpg",
+					click : function() {alert("The Seafarers III");},
+					radius : 5
+				},
+				{
+					name : "Lolita (1962 film)",
+					date : "1962-06-13",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/7/72/LolitaPoster.jpg/215px-LolitaPoster.jpg"
+				},
+				{
+					name : "Fear and Desire",
+					date : "1953-03-31",
+					img : "http://upload.wikimedia.org/wikipedia/en/f/f7/Fear_and_Desire_Poster.jpg"
+				},
+				{
+					name : "Paths of Glory",
+					date : "1957-12-25",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/b/bc/PathsOfGloryPoster.jpg/220px-PathsOfGloryPoster.jpg"
+				},
+				{
+					name : "A Clockwork Orange (film)",
+					date : "1971-12-19",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/4/48/Clockwork_orangeA.jpg/220px-Clockwork_orangeA.jpg"
+				},
+				{
+					name : "Killer's Kiss",
+					date : "1955-09-28",
+					img : "http://upload.wikimedia.org/wikipedia/en/thumb/a/a6/KillersKissPoster.jpg/220px-KillersKissPoster.jpg"
+				} ];
+
+		TimeKnots.draw("#timeline1", kurbickFilms, {
+			dateFormat : "%d %B %Y",
+			color : "#696",
+			width : 500,
+			showLabels : false,
+			labelFormat : "%d %b %Y",
+			//nice : 'year',
+			translateX : 10,
+			translateY : 130,
+			selectedColor : "#656",
+			lineWidth : 3,
+			selectedLineWidth : 5,
+			dateSlider : true
+		});
+
+		var mySchedule = [ {
+			name : "Wake up",
+			date : "2012-09-28T06:00:00"
+		}, {
+			name : "Breakfast",
+			date : "2012-09-28T06:30:00"
+		}, {
+			name : "Leave kids at school",
+			date : "2012-09-28T07:45:00"
+		}, {
+			name : "Check email",
+			date : "2012-09-28T08:00:00"
+		}, {
+			name : "Lunch",
+			date : "2012-09-28T11:30:00"
+		}, {
+			name : "Send report",
+			date : "2012-09-28T13:15:00"
+		}, {
+			name : "Pick kids",
+			date : "2012-09-28T17:16:00"
+		}, {
+			name : "Dinner",
+			date : "2012-09-28T18:13:00"
+		}, {
+			name : "Watch a movie",
+			date : "2012-09-28T20:16:00"
+		}, {
+			name : "Go to sleep",
+			date : "2012-09-28T23:00:00"
+		} ];
+		TimeKnots.draw("#timeline2", mySchedule, {
+			horizontalLayout : false,
+			color : "#669",
+			height : 450,
+			width : 200,
+			showLabels : false,
+			labelFormat : "%H:%M",
+			axisOrientation : "left",
+			nice : 'hour',
+			translateY : 10,
+			translateX : 60,
+			dateSlider : false
+		});
+
+	</script>
+
+</body>
+</html>
+
