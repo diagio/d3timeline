@@ -1,5 +1,5 @@
 var TimeKnots = {
-  draw: function(id, events, options){
+  draw: function(id, events, options, minValueOverride, maxValueOverride){
     var cfg = {
       width: 600,
       height: 200,
@@ -20,7 +20,7 @@ var TimeKnots = {
     };
     
     
-    //default configuration overrid
+    //default configuration overrides
     if(options != undefined){
       for(var i in options){
         cfg[i] = options[i];
@@ -28,6 +28,30 @@ var TimeKnots = {
     }
     if(cfg.addNow != false){
       events.push({date: new Date(), name: cfg.addNowLabel || "Today"});
+    }
+    
+    //Calculate times in terms of timestamps
+    
+    var timestamps = events.map(function(d){return  Date.parse(d.date);});//new Date(d.date).getTime()});
+    
+    var redraw = false;
+    
+    var minValue = d3.min(timestamps);
+    var origMinValue = minValue;
+    if (minValueOverride != undefined) {
+    	minValue = minValueOverride;
+    	redraw = true;
+    }
+    var maxValue = d3.max(timestamps);
+    var origMaxValue = maxValue;
+    if (maxValueOverride != undefined) {
+    	maxValue = maxValueOverride;
+    	redraw = true;
+    }
+    
+    if (redraw) {
+    	var div = d3.select(id);
+    	div.selectAll("*").remove();
     }
     
     var tip = d3.select(id)
@@ -51,16 +75,6 @@ var TimeKnots = {
     }))
     .append("g");
 
-    
-    //Calculate times in terms of timestamps
-    
-    var timestamps = events.map(function(d){return  Date.parse(d.date);});//new Date(d.date).getTime()});
-    var maxValue = d3.max(timestamps);
-    var minValue = d3.min(timestamps);
-    
-    //var maxValue = Date.parse("1953-10-31");
-    //var minValue = Date.parse("1953-10-01");
-    
     var margin = (d3.max(events.map(function(d){return d.radius})) || cfg.radius)*1.5+cfg.lineWidth;
     var step = (cfg.horizontalLayout)?((cfg.width-2*margin)/(maxValue - minValue)):((cfg.height-2*margin)/(maxValue - minValue));
     var series = [];
@@ -204,37 +218,17 @@ var TimeKnots = {
         // Add date slider
         $( document ).ready(function() {
             $("#slider").dateRangeSlider();
-            $("#slider").dateRangeSlider("bounds", new Date(minValue), new Date(maxValue));
+            $("#slider").dateRangeSlider("bounds", new Date(origMinValue), new Date(origMaxValue));
             $("#slider").dateRangeSlider("min", new Date(minValue));
             $("#slider").dateRangeSlider("max", new Date(maxValue));
-            
+        });        
+
+        $( document ).ready(function() {
             $("#slider").bind("userValuesChanged", function(e, data){
             	var dateValues = $("#slider").dateRangeSlider("values");
-                minValue = Date.parse(dateValues.min);
-                maxValue = Date.parse(dateValues.max);
-                
-                // Reset axis - TODO: repeated code
-                var minDate = new Date(minValue);
-                var maxDate = new Date(maxValue);
-                
-                var x = d3.time.scale()
-            	    .domain([minDate, maxDate])
-            	    .nice(getNice(cfg.nice))
-            	    .range([0, axisLength - 25]);
-                
-                var xAxis = d3.svg.axis()
-            	.scale(x)
-            	.orient(cfg.axisOrientation)
-            	.ticks(5)
-            	.tickFormat(d3.time.format(cfg.labelFormat));
-                
-                d3.select(id).selectAll("g.axis")
-                	.attr("transform", "translate(" + cfg.translateX + "," + cfg.translateY + ")")
-                	.attr("class", "axis")
-                	.call(xAxis);
+                TimeKnots.draw(id, events, options, Date.parse(dateValues.min), Date.parse(dateValues.max));
             });
         });
-        
     }
     
     svg.on("mousemove", function(){
@@ -263,6 +257,7 @@ var TimeKnots = {
     	.attr("transform", "translate(" + cfg.translateX + "," + cfg.translateY + ")")
     	.attr("class", "axis")
     	.call(xAxis);
+
   }
 
 }
