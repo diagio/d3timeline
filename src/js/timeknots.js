@@ -5,7 +5,9 @@ var TimeKnots = {
       height: 200,
       radius: 10,
       lineWidth: 4,
-      color: "#999",
+      circleWidth: 4,
+      lineColor: "#999",
+      circleColor: "#999",
       background: "#FFF",
       dateFormat: "%Y/%m/%d %H:%M:%S",
       horizontalLayout: true,
@@ -27,22 +29,33 @@ var TimeKnots = {
       }
     }
     if(cfg.addNow != false){
-      events.push({date: new Date(), name: cfg.addNowLabel || "Today"});
-    }
+        events.push({date: new Date(), name: cfg.addNowLabel || "Today"});
+      }
     
     //Calculate times in terms of timestamps
     
-    var timestamps = events.map(function(d){return  Date.parse(d.date);});//new Date(d.date).getTime()});
+    var timestamps = events.map(function(d){return  Date.parse(d.date);});
     
     var redraw = false;
     
     var minValue = d3.min(timestamps);
+    if(cfg.startDate != undefined){
+    	if (Date.parse(cfg.startDate) < minValue) {
+    		minValue = Date.parse(cfg.startDate);
+    	}
+      }
     var origMinValue = minValue;
     if (minValueOverride != undefined) {
     	minValue = minValueOverride;
     	redraw = true;
     }
+    
     var maxValue = d3.max(timestamps);
+    if(cfg.endDate != undefined){
+    	if (Date.parse(cfg.endDate) > maxValue) {
+    		maxValue = Date.parse(cfg.endDate);
+    	}
+      }
     var origMaxValue = maxValue;
     if (maxValueOverride != undefined) {
     	maxValue = maxValueOverride;
@@ -75,7 +88,7 @@ var TimeKnots = {
     }))
     .append("g");
 
-    var margin = (d3.max(events.map(function(d){return d.radius})) || cfg.radius)*1.5+cfg.lineWidth;
+    var margin = (d3.max(events.map(function(d){return d.radius})) || cfg.radius)*1.5+cfg.circleWidth;
     var step = (cfg.horizontalLayout)?((cfg.width-2*margin)/(maxValue - minValue)):((cfg.height-2*margin)/(maxValue - minValue));
     var series = [];
     if(maxValue == minValue){step = 0;if(cfg.horizontalLayout){margin=cfg.width/2}else{margin=cfg.height/2}}
@@ -85,7 +98,7 @@ var TimeKnots = {
     .attr("x2", function(d){if(cfg.horizontalLayout){return (cfg.width - margin)} return Math.floor(cfg.width/2)})
     .attr("y1", function(d){if(cfg.horizontalLayout){return Math.floor(cfg.height/2)}return margin})
     .attr("y2", function(d){if(cfg.horizontalLayout){return Math.floor(cfg.height/2)}return cfg.height-margin})
-    .style("stroke", cfg.color)
+    .style("stroke", cfg.lineColor)
     .style("stroke-width", cfg.lineWidth);
     
     svg.selectAll("circle")
@@ -94,8 +107,8 @@ var TimeKnots = {
     .attr("class", "timeline-event")
     .attr("r", function(d){if(d.radius != undefined){return d.radius} return cfg.radius})
     .style("stroke", function(d){
-                    if(d.color != undefined){
-                      return d.color
+                    if(d.circleColor != undefined){
+                      return d.circleColor
                     }
                     if(d.series != undefined){
                       if(series.indexOf(d.series) < 0){
@@ -104,9 +117,9 @@ var TimeKnots = {
                       console.log(d.series, series, series.indexOf(d.series));
                       return cfg.seriesColor(series.indexOf(d.series));
                     }
-                    return cfg.color}
+                    return cfg.circleColor}
     )
-    .style("stroke-width", function(d){if(d.lineWidth != undefined){return d.lineWidth} return cfg.lineWidth})
+    .style("stroke-width", function(d){if(d.circleWidth != undefined){return d.circleWidth} return cfg.circleWidth})
     .style("fill", function(d){if(d.background != undefined){return d.background} return cfg.background})
     .attr("cy", function(d){
         if(cfg.horizontalLayout){
@@ -132,10 +145,10 @@ var TimeKnots = {
             if(cfg.selectedColor != undefined){
                 return cfg.selectedColor;
               }
-            if(d.color != undefined){
-                return d.color;
+            if(d.circleColor != undefined){
+                return d.circleColor;
               }
-            return cfg.color;
+            return cfg.circleColor;
         })
         .style("stroke-width", function(d){
         	if (d.selectedLineWidth != undefined) {
@@ -144,10 +157,10 @@ var TimeKnots = {
         	if (cfg.selectedLineWidth != undefined) {
         		return cfg.selectedLineWidth;
         	}
-        	if (d.lineWidth != undefined) {
-        		return d.lineWidth;
+        	if (d.circleWidth != undefined) {
+        		return d.circleWidth;
         	}
-        	return cfg.lineWidth;
+        	return cfg.circleWidth;
         });
       
       /*
@@ -168,16 +181,16 @@ var TimeKnots = {
         d3.select(this)
         .style("fill", function(d){if(d.background != undefined){return d.background} return cfg.background})
       	.style("stroke", function(d){
-            if(d.color != undefined){
-                return d.color;
+            if(d.circleColor != undefined){
+                return d.circleColor;
               }
-            return cfg.color;
+            return cfg.circleColor;
         })
         .style("stroke-width", function(d){
-        	if (d.lineWidth != undefined) {
-        		return d.lineWidth;
+        	if (d.circleWidth != undefined) {
+        		return d.circleWidth;
         	}
-        	return cfg.lineWidth;
+        	return cfg.circleWidth;
         })
         .transition()
         .duration(100)
