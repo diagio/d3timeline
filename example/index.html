@@ -36,6 +36,10 @@ body {
     font-size: 11px;
 }
 
+.bar {
+	fill: lightgrey;
+}
+
 </style>
 </head>
 <body>
@@ -56,6 +60,24 @@ body {
 	</div>
 	<script type="text/javascript">
 		var kurbickFilms = [
+				{
+					name : "Test Period 1",
+					startdate: "1951-12-22",
+					enddate: "1954-08-11"
+
+				},
+				{
+					name : "Test Period 2",
+					startdate: "1955-5-01",
+					enddate: "1958-08-11",
+					colour: "red"
+				},
+				{
+					name : "Test Period 3",
+					startdate: "1962-06-01",
+					enddate: "1970-08-11",
+					colour: "lightblue"
+				},
 				{
 					name : "Day of the Fight",
 					date : "1951-04-26",
@@ -110,7 +132,7 @@ body {
 
 		TimeKnots.draw("#timeline1", kurbickFilms, {
 			dateFormat : "%d %B %Y",
-			lineColor : "#68a1d6",
+			lineColor : "#696",
 			circleColor : "#696",
 			width : 500,
 			showLabels : false,
@@ -119,7 +141,7 @@ body {
 			translateX : 10,
 			translateY : 130,
 			selectedColor : "#656",
-			lineWidth : 40,
+			lineWidth : 2,
 			circleWidth : 3,
 			selectedLineWidth : 5,
 			dateSlider : true,
@@ -128,7 +150,13 @@ body {
 			margin : 0
 		});
 
-		var mySchedule = [ {
+		var mySchedule = [{
+			name: "Sample",
+			startdate: "2012-09-28T09:00:00",
+			enddate: "2012-09-28T13:00:00"
+
+		},
+							{
 			name : "Wake up",
 			date : "2012-09-28T06:00:00"
 		}, {

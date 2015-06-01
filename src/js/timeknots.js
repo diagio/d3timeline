@@ -94,6 +94,40 @@ var TimeKnots = {
     }
     var step = (cfg.horizontalLayout)?((cfg.width-2*margin)/(maxValue - minValue)):((cfg.height-2*margin)/(maxValue - minValue));
     var series = [];
+
+      svg.selectAll("bar")
+          .data(events).enter()
+          .append('rect')
+          .attr('class', 'bar')
+          .style("fill", function(d){if(d.colour != undefined){return d.colour}})
+          .attr('y', function(d){
+              if(cfg.horizontalLayout){
+                  return Math.floor(cfg.height/2)-17
+              }
+              return Math.floor(step*(new Date(d.startdate).getTime() - minValue) + margin)
+          })
+          .attr('x', function(d){
+              if(cfg.horizontalLayout){
+                  var x=  Math.floor(step*(new Date(d.startdate).getTime() - minValue) + margin);
+                  return x;
+              }
+              return Math.floor(cfg.width/2)-17})
+          .attr('width', function(d){
+              if(cfg.horizontalLayout){
+                  var x=  (Math.floor(step*(new Date(d.enddate).getTime() - minValue) + margin))-(Math.floor(step*(new Date(d.startdate).getTime() - minValue) + margin));
+                  return x;
+              }
+              return 35
+          })
+          .attr('height',function(d){
+              if(cfg.horizontalLayout){
+                  return 35
+              }
+              var y=  (Math.floor(step*(new Date(d.enddate).getTime() - minValue) + margin))-(Math.floor(step*(new Date(d.startdate).getTime() - minValue) + margin));
+              return y;
+          }
+      );
+
     if(maxValue == minValue){step = 0;if(cfg.horizontalLayout){margin=cfg.width/2}else{margin=cfg.height/2}}
     svg.append("line")
     .attr("class", "timeline-line")
@@ -108,7 +142,7 @@ var TimeKnots = {
     .data(events).enter()
     .append("circle")
     .attr("class", "timeline-event")
-    .attr("r", function(d){if(d.radius != undefined){return d.radius} return cfg.radius})
+    .attr("r", function(d){if(d.date==undefined){return 0} if(d.radius != undefined){return d.radius} return cfg.radius})
     .style("stroke", function(d){
                     if(d.circleColor != undefined){
                       return d.circleColor
@@ -128,12 +162,12 @@ var TimeKnots = {
         if(cfg.horizontalLayout){
           return Math.floor(cfg.height/2)
         }
-        return Math.floor(step*(new Date(d.date).getTime() - minValue) + margin)
+        return Math.floor(step * (new Date(d.date).getTime() - minValue) + margin)
     })
     .attr("cx", function(d){
         if(cfg.horizontalLayout){
-          var x=  Math.floor(step*(new Date(d.date).getTime() - minValue) + margin);
-          return x;
+              var x = Math.floor(step * (new Date(d.date).getTime() - minValue) + margin);
+              return x;
         }
         return Math.floor(cfg.width/2)
     }).on("mouseover", function(d){
