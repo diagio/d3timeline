@@ -88,7 +88,10 @@ var TimeKnots = {
     }))
     .append("g");
 
-    var margin = (d3.max(events.map(function(d){return d.radius})) || cfg.radius)*1.5+cfg.circleWidth;
+    var margin = cfg.margin;
+    if (margin == undefined) {
+    	margin = (d3.max(events.map(function(d){return d.radius})) || cfg.radius)*1.5+cfg.circleWidth;
+    }
     var step = (cfg.horizontalLayout)?((cfg.width-2*margin)/(maxValue - minValue)):((cfg.height-2*margin)/(maxValue - minValue));
     var series = [];
     if(maxValue == minValue){step = 0;if(cfg.horizontalLayout){margin=cfg.width/2}else{margin=cfg.height/2}}
